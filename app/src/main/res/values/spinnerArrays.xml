@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="profileSpinner">
+        <item>Default</item>
+        <item>Custom</item>
+    </string-array>
+    <string-array name="threadingSpinner">
+        <item>Singlethread</item>
+        <item>Multithread</item>
+        <item>Adaptivethread</item>
+    </string-array>
+    <string-array name="averageSpinner">
+        <item>Standard</item>
+        <item>Speedtest.net</item>
+    </string-array>
+</resources>
