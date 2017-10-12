@@ -11,14 +11,14 @@ public class PingtestParameters {
     public static final String DEFAULT_PING_URL = "8.8.8.8";
     public static final int DEFAULT_PING_COUNT = 10;
 
-
     private SampleContainer sampleContainer;
     private String pingURL;
-    private int pingcount;
-    private double ping;
+    private int pingCount;
 
     public PingtestParameters() {
         sampleContainer = new SampleContainer();
+        this.pingURL = DEFAULT_PING_URL;
+        this.pingCount = DEFAULT_PING_COUNT;
     }
 
     public SampleContainer getSampleContainer() {
@@ -34,17 +34,10 @@ public class PingtestParameters {
     }
 
     public int getPingcount() {
-        return pingcount;
+        return pingCount;
     }
 
-    public void setPingcount(int pingcount) {
-        this.pingcount = pingcount;
-    }
-
-    public static PingtestParameters getDefaultPingtestParameters() {
-        PingtestParameters pingtestParameters = new PingtestParameters();
-        pingtestParameters.setPingcount(DEFAULT_PING_COUNT);
-        pingtestParameters.setPingURL(DEFAULT_PING_URL);
-        return pingtestParameters;
+    public void setPingCount(int pingcount) {
+        this.pingCount = pingcount;
     }
 }

@@ -16,28 +16,55 @@ public class SpeedtestParameters {
     public static final String DEFAULT_FILE_URL = "http://download.thinkbroadband.com/1GB.zip";
     public static final int DEFAULT_BUFFER_SIZE = 32768;
     public static final int DEFAULT_DURATION = 15000;
-    public static final int DEFAULT_POLLRATE = 100;
-    public static final int DEFAULT_PROBEINTERVAL = 1000;
-    public static final int AVERAGE_STANDARD = 0;
-    public static final int AVERAGE_SPEEDTEST_DOT_NET = 1;
-    public static final double DEFAULT_PROBE_THRESHHOLD = 5;
+    public static final int DEFAULT_POLL_INTERVAL = 100;
+    public static final int DEFAULT_ADAPT_INTERVAL = 1000;
+    public static final int DEFAULT_ADAPT_THRESHHOLD = 10000;
+    public static final int DEFAULT_SINGLE_THREAD_COUNT = 1;
+    public static final int DEFAULT_MULTI_THREAD_COUNT = 5;
+    public static final int DEFAULT_MIN_THREAD_COUNT = 1;
+    public static final int DEFAULT_MAX_THREAD_COUNT = 10;
+
+    public enum AverageMode {
+        STANDARD, SPEEDTEST_DOT_NET
+    }
+
+    public enum ThreadingMode {
+        SINGLE, MULTI, ADAPTIVE
+    }
+
 
     private URL fileURL;
-    private int buffersize;
-    private int threadcount;
-    private int minThreadcount;
-    private int maxThreacount;
+    private int bufferSize;
+    private AverageMode averageMode;
+    private ThreadingMode threadingMode;
+    private int threadCount;
+    private int minThreadCount;
+    private int maxThreadCount;
     private int pollInterval;
     private int duration;
-    private boolean isAdaptive;
-    private int adaptionInterval;
-    private int averageType;
+    private int adaptInterval;
+    private int adaptThreshold;
     private SampleContainer bandwidthSampleContainer;
     private SampleContainer wifiSampleContainer;
 
     public SpeedtestParameters() {
         bandwidthSampleContainer = new SampleContainer();
         wifiSampleContainer = new SampleContainer();
+        try {
+            fileURL = new URL(DEFAULT_FILE_URL);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        bufferSize = DEFAULT_BUFFER_SIZE;
+        averageMode = AverageMode.STANDARD;
+        threadingMode = ThreadingMode.SINGLE;
+        threadCount = DEFAULT_SINGLE_THREAD_COUNT;
+        minThreadCount = DEFAULT_MIN_THREAD_COUNT;
+        maxThreadCount = DEFAULT_MAX_THREAD_COUNT;
+        pollInterval = DEFAULT_POLL_INTERVAL;
+        duration = DEFAULT_DURATION;
+        adaptInterval = DEFAULT_ADAPT_INTERVAL;
+        adaptThreshold = DEFAULT_ADAPT_THRESHHOLD;
     }
 
     public URL getFileURL() {
@@ -52,36 +79,52 @@ public class SpeedtestParameters {
         }
     }
 
-    public int getBuffersize() {
-        return buffersize;
+    public int getBufferSize() {
+        return bufferSize;
     }
 
-    public void setBuffersize(int buffersize) {
-        this.buffersize = buffersize;
+    public void setBufferSize(int bufferSize) {
+        this.bufferSize = bufferSize;
     }
 
-    public int getThreadcount() {
-        return threadcount;
+    public AverageMode getAverageMode() {
+        return averageMode;
     }
 
-    public void setThreadcount(int threadcount) {
-        this.threadcount = threadcount;
+    public void setAverageMode(AverageMode averageMode) {
+        this.averageMode = averageMode;
     }
 
-    public int getMinThreadcount() {
-        return minThreadcount;
+    public ThreadingMode getThreadingMode() {
+        return threadingMode;
     }
 
-    public void setMinThreadcount(int minThreadcount) {
-        this.minThreadcount = minThreadcount;
+    public void setThreadingMode(ThreadingMode threadingMode) {
+        this.threadingMode = threadingMode;
     }
 
-    public int getMaxThreacount() {
-        return maxThreacount;
+    public int getThreadCount() {
+        return threadCount;
     }
 
-    public void setMaxThreacount(int maxThreacount) {
-        this.maxThreacount = maxThreacount;
+    public void setThreadCount(int threadCount) {
+        this.threadCount = threadCount;
+    }
+
+    public int getMinThreadCount() {
+        return minThreadCount;
+    }
+
+    public void setMinThreadCount(int minThreadCount) {
+        this.minThreadCount = minThreadCount;
+    }
+
+    public int getMaxThreadCount() {
+        return maxThreadCount;
+    }
+
+    public void setMaxThreadCount(int maxThreadCount) {
+        this.maxThreadCount = maxThreadCount;
     }
 
     public int getPollInterval() {
@@ -100,14 +143,6 @@ public class SpeedtestParameters {
         this.duration = duration;
     }
 
-    public boolean isAdaptive() {
-        return isAdaptive;
-    }
-
-    public void setAdaptive(boolean adaptive) {
-        isAdaptive = adaptive;
-    }
-
     public SampleContainer getBandwidthSampleContainer() {
         return bandwidthSampleContainer;
     }
@@ -116,35 +151,28 @@ public class SpeedtestParameters {
         return wifiSampleContainer;
     }
 
-    public int getSampleCount() { return duration / pollInterval; }
-
-    public int getAdaptionInterval() {
-        return adaptionInterval;
+    public int getSampleCount() {
+        return duration / pollInterval;
     }
 
-    public void setAdaptionInterval(int adaptionInterval) {
-        this.adaptionInterval = adaptionInterval;
+    public int getAdaptInterval() {
+        return adaptInterval;
     }
 
-    public int getAverageType() {
-        return averageType;
+    public void setAdaptInterval(int adaptInterval) {
+        this.adaptInterval = adaptInterval;
     }
 
-    public void setAverageType(int averageType) {
-        this.averageType = averageType;
+    public int getAdaptThreshold() {
+        return adaptThreshold;
     }
 
-    public static SpeedtestParameters getDefaultSpeedtestParameters() {
-        SpeedtestParameters speedtestParameters = new SpeedtestParameters();
-        speedtestParameters.setFileURL(DEFAULT_FILE_URL);
-        speedtestParameters.setAdaptive(false);
-        speedtestParameters.setThreadcount(1);
-        speedtestParameters.setBuffersize(DEFAULT_BUFFER_SIZE);
-        speedtestParameters.setDuration(DEFAULT_DURATION);
-        speedtestParameters.setPollInterval(DEFAULT_POLLRATE);
-        speedtestParameters.setAdaptionInterval(DEFAULT_PROBEINTERVAL);
-        return speedtestParameters;
+    public void setAdaptThreshold(int adaptThreshold) {
+        this.adaptThreshold = adaptThreshold;
     }
 
+    public boolean isAdaptive() {
+        return threadingMode == ThreadingMode.ADAPTIVE;
+    }
 }
 

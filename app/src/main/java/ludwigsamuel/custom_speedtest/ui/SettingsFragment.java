@@ -1,20 +1,15 @@
 package ludwigsamuel.custom_speedtest.ui;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.TabActivity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TabHost;
 
 import ludwigsamuel.custom_speedtest.R;
 import ludwigsamuel.custom_speedtest.util.Animator;
@@ -116,63 +111,50 @@ public class SettingsFragment extends android.support.v4.app.Fragment implements
         PingtestParameters pingtestParameters;
         SpeedtestParameters speedtestParameters;
         if(profileSpinner.getSelectedItem().toString().equals(PROFILE_DEFAULT)) {
-            pingtestParameters = PingtestParameters.getDefaultPingtestParameters();
-            speedtestParameters = SpeedtestParameters.getDefaultSpeedtestParameters();
+            pingtestParameters = new PingtestParameters();
+            speedtestParameters = new SpeedtestParameters();
         } else {
             pingtestParameters = new PingtestParameters();
-            if(pingUrlEditText.getText() != null && !pingUrlEditText.getText().toString().equals("")) {
+            if(!isNullOrEmpty(pingUrlEditText)) {
                 pingtestParameters.setPingURL(pingUrlEditText.getText().toString());
-            } else {
-                pingtestParameters.setPingURL(PingtestParameters.DEFAULT_PING_URL);
             }
-            pingtestParameters.setPingcount(PingtestParameters.DEFAULT_PING_COUNT);
-
             speedtestParameters = new SpeedtestParameters();
             switch (threadingSpinner.getSelectedItem().toString()) {
                 case THREADING_DEFAULT:
-                    speedtestParameters.setAdaptive(false);
-                    speedtestParameters.setThreadcount(1);
+                    speedtestParameters.setThreadingMode(SpeedtestParameters.ThreadingMode.SINGLE);
+                    speedtestParameters.setThreadCount(SpeedtestParameters.DEFAULT_SINGLE_THREAD_COUNT);
                     break;
                 case THREADING_ADAPTIVE:
-                    speedtestParameters.setAdaptive(true);
-                    speedtestParameters.setMinThreadcount(1);
-                    speedtestParameters.setMaxThreacount(100);
+                    speedtestParameters.setThreadingMode(SpeedtestParameters.ThreadingMode.ADAPTIVE);
+                    speedtestParameters.setMinThreadCount(SpeedtestParameters.DEFAULT_MIN_THREAD_COUNT);
+                    speedtestParameters.setMaxThreadCount(SpeedtestParameters.DEFAULT_MAX_THREAD_COUNT);
                     break;
                 case THREADING_MULTI:
-                    speedtestParameters.setAdaptive(false);
-                    speedtestParameters.setThreadcount(5);
+                    speedtestParameters.setThreadingMode(SpeedtestParameters.ThreadingMode.MULTI);
+                    speedtestParameters.setThreadCount(SpeedtestParameters.DEFAULT_MULTI_THREAD_COUNT);
                     break;
             }
 
             switch (averageSpinner.getSelectedItem().toString()) {
                 case AVERAGE_DEFAULT:
-                    speedtestParameters.setAverageType(SpeedtestParameters.AVERAGE_STANDARD);
+                    speedtestParameters.setAverageMode(SpeedtestParameters.AverageMode.STANDARD);
                     break;
                 case AVERAGE_SPEEDTEST_DOT_NET:
-                    speedtestParameters.setAverageType(SpeedtestParameters.AVERAGE_SPEEDTEST_DOT_NET);
+                    speedtestParameters.setAverageMode(SpeedtestParameters.AverageMode.SPEEDTEST_DOT_NET);
                     break;
             }
 
-            if(downloadUrlEditText.getText() != null && !downloadUrlEditText.getText().toString().equals("")) {
+            if(!isNullOrEmpty(downloadUrlEditText)) {
                 speedtestParameters.setFileURL(downloadUrlEditText.getText().toString());
-            } else {
-                speedtestParameters.setFileURL(SpeedtestParameters.DEFAULT_FILE_URL);
             }
 
-            if(durationEditText.getText() != null && !durationEditText.getText().toString().equals("")) {
+            if(!isNullOrEmpty(durationEditText)) {
                 speedtestParameters.setDuration(Integer.valueOf(durationEditText.getText().toString()));
-            } else {
-                speedtestParameters.setDuration(SpeedtestParameters.DEFAULT_DURATION);
             }
 
-            if(bufferSizeEditText.getText() != null && !bufferSizeEditText.getText().toString().equals("")) {
-                speedtestParameters.setBuffersize(Integer.valueOf(bufferSizeEditText.getText().toString()));
-            } else {
-                speedtestParameters.setBuffersize(SpeedtestParameters.DEFAULT_BUFFER_SIZE);
+            if(!isNullOrEmpty(bufferSizeEditText)) {
+                speedtestParameters.setBufferSize(Integer.valueOf(bufferSizeEditText.getText().toString()));
             }
-
-            speedtestParameters.setPollInterval(SpeedtestParameters.DEFAULT_POLLRATE);
-            speedtestParameters.setAdaptionInterval(SpeedtestParameters.DEFAULT_PROBEINTERVAL);
         }
         ParameterContainer parameterContainer = new ParameterContainer();
         parameterContainer.setPingtestParameters(pingtestParameters);
@@ -197,5 +179,9 @@ public class SettingsFragment extends android.support.v4.app.Fragment implements
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    private boolean isNullOrEmpty(EditText input) {
+        return input.getText() == null || input.getText().toString().equals("");
     }
 }
