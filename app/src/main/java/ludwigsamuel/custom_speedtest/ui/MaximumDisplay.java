@@ -3,11 +3,13 @@ package ludwigsamuel.custom_speedtest.ui;
 import android.app.Activity;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by secur on 7/17/2017.
  */
 
-public class MaximumDisplay implements Pushable<Double> {
+public class MaximumDisplay implements Pushable<ArrayList<Double>> {
 
 
     private double maximum = 0;
@@ -35,9 +37,10 @@ public class MaximumDisplay implements Pushable<Double> {
     }
 
     @Override
-    public void push(final Double value) {
+    public void push(final ArrayList<Double> values) {
+        Double value = values.get(values.size()-1);
         if (value >= maximum) {
-            maximum = value;jjj
+            maximum = value;
             display(value);
         }
     }
@@ -53,6 +56,8 @@ public class MaximumDisplay implements Pushable<Double> {
 
     public void reset() {
         maximum = 0d;
-        push(0d);
+        ArrayList<Double> list = new ArrayList<>();
+        list.add(0d);
+        push(list);
     }
 }

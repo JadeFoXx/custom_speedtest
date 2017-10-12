@@ -88,6 +88,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         if(view.getId() == R.id.main_start_button) {
             mViewPager.setCurrentItem(0);
+            if(testFragment==null) {
+                testFragment = TestFragment.newInstance(0, "Test");
+                testFragment.setParentActivity(mainActivity);
+            }
             testFragment.start(settingsFragment.getSelectedParameters());
         }
     }

@@ -14,7 +14,7 @@ import ludwigsamuel.custom_speedtest.util.App;
  * Created by Ludwig Samuel on 12-Nov-16.
  */
 
-public class BarGraph implements Pushable<Double> {
+public class BarGraph implements Pushable<ArrayList<Double>> {
 
     private int sampleCount;
     private LinearLayout rootLayout;
@@ -117,8 +117,8 @@ public class BarGraph implements Pushable<Double> {
     }
 
     @Override
-    public void push(Double value) {
-        addBar(value * getMultiplier());
+    public void push(ArrayList<Double> value) {
+        addBar(value.get(value.size()-1) * getMultiplier());
     }
 
 }

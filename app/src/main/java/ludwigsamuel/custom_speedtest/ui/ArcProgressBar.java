@@ -14,12 +14,18 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 import ludwigsamuel.custom_speedtest.R;
+import ludwigsamuel.custom_speedtest.util.Calc;
+import ludwigsamuel.custom_speedtest.util.SpeedtestParameters;
 
 /**
  * Created by bruce on 11/6/14.
  */
-public class ArcProgressBar extends View implements Pushable<Double> {
+public class ArcProgressBar extends View implements Pushable<ArrayList<Double>> {
 
     private Double multiplier;
 
@@ -384,11 +390,11 @@ public class ArcProgressBar extends View implements Pushable<Double> {
     }
 
     @Override
-    public void push(final Double value) {
+    public void push(final ArrayList<Double> values) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                setProgress(value * getMultiplier());
+                setProgress(Calc.average(values) * getMultiplier());
             }
         };
         handler.post(r);
@@ -397,6 +403,8 @@ public class ArcProgressBar extends View implements Pushable<Double> {
     @Override
     public void reset() {
         setMax(default_max);
-        push(0d);
+        ArrayList<Double> list = new ArrayList<>();
+        list.add(0d);
+        push(list);
     }
 }

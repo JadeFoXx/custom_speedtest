@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -17,8 +16,6 @@ import android.widget.TextView;
 import ludwigsamuel.custom_speedtest.R;
 import ludwigsamuel.custom_speedtest.util.Animator;
 import ludwigsamuel.custom_speedtest.util.ParameterContainer;
-import ludwigsamuel.custom_speedtest.util.PingtestParameters;
-import ludwigsamuel.custom_speedtest.util.SpeedtestParameters;
 import ludwigsamuel.custom_speedtest.util.Test;
 
 /**
@@ -108,9 +105,9 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
         maximumDisplay.reset();
         barGraph.reset();
         parameterContainer.getPingtestParameters().getSampleContainer().registerDataContainer(arcProgressBarPing);
-        parameterContainer.getSpeedtestParameters().getSampleContainer().registerDataContainer(maximumDisplay);
-        parameterContainer.getSpeedtestParameters().getSampleContainer().registerDataContainer(barGraph);
-        parameterContainer.getSpeedtestParameters().getSampleContainer().registerDataContainer(arcProgressBarSpeed);
+        parameterContainer.getSpeedtestParameters().getBandwidthSampleContainer().registerDataContainer(maximumDisplay);
+        parameterContainer.getSpeedtestParameters().getBandwidthSampleContainer().registerDataContainer(barGraph);
+        parameterContainer.getSpeedtestParameters().getBandwidthSampleContainer().registerDataContainer(arcProgressBarSpeed);
         barGraph.setSampleCount(parameterContainer.getSpeedtestParameters().getDuration() / parameterContainer.getSpeedtestParameters().getPollInterval());
         new AsyncTest().execute(parameterContainer);
     }

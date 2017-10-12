@@ -100,14 +100,14 @@ public class SettingsFragment extends android.support.v4.app.Fragment implements
                 }
                 break;
             case PROFILE_CUSTOM:
-                if(!init) {
-                    Animator.expand(speedtestContainer, 5);
-                    Animator.expand(pingtestContainer, 5);
-                }
                 downloadUrlEditText.setText(SpeedtestParameters.DEFAULT_FILE_URL);
                 durationEditText.setText(Integer.toString(SpeedtestParameters.DEFAULT_DURATION));
                 bufferSizeEditText.setText(Integer.toString(SpeedtestParameters.DEFAULT_BUFFER_SIZE));
                 pingUrlEditText.setText(PingtestParameters.DEFAULT_PING_URL);
+                if(!init) {
+                    Animator.expand(speedtestContainer, 5);
+                    Animator.expand(pingtestContainer, 5);
+                }
                 break;
         }
     }

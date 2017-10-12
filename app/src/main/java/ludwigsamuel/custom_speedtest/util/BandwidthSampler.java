@@ -12,7 +12,7 @@ public class BandwidthSampler {
     private Thread samplingThread;
     private boolean isSampling;
 
-    public void startSampling(final SampleContainer samples, final int pollInterval) {
+    public void startSampling(final SpeedtestParameters parameters) {
         isSampling = true;
         samplingThread = new Thread(new Runnable() {
             @Override
@@ -21,12 +21,12 @@ public class BandwidthSampler {
                 while (isSampling) {
                     long startTime = System.currentTimeMillis();
                     long startBytes = TrafficStats.getTotalRxBytes();
-                    nox.sleep(pollInterval);
+                    nox.sleep(parameters.getPollInterval());
                     long endTime = System.currentTimeMillis();
                     long endBytes = TrafficStats.getTotalRxBytes();
                     double sample = ((endBytes - startBytes) * 8) / (endTime - startTime);
                     if(isSampling) {
-                        samples.addSample(sample);
+                        parameters.getBandwidthSampleContainer().addSample(sample);
                     }
                 }
             }

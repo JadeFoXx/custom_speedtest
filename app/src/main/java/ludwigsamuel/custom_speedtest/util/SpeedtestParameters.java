@@ -20,6 +20,7 @@ public class SpeedtestParameters {
     public static final int DEFAULT_PROBEINTERVAL = 1000;
     public static final int AVERAGE_STANDARD = 0;
     public static final int AVERAGE_SPEEDTEST_DOT_NET = 1;
+    public static final double DEFAULT_PROBE_THRESHHOLD = 5;
 
     private URL fileURL;
     private int buffersize;
@@ -27,15 +28,16 @@ public class SpeedtestParameters {
     private int minThreadcount;
     private int maxThreacount;
     private int pollInterval;
-    private int sampleCount;
     private int duration;
     private boolean isAdaptive;
     private int adaptionInterval;
     private int averageType;
-    private SampleContainer sampleContainer;
+    private SampleContainer bandwidthSampleContainer;
+    private SampleContainer wifiSampleContainer;
 
     public SpeedtestParameters() {
-        sampleContainer = new SampleContainer();
+        bandwidthSampleContainer = new SampleContainer();
+        wifiSampleContainer = new SampleContainer();
     }
 
     public URL getFileURL() {
@@ -106,15 +108,15 @@ public class SpeedtestParameters {
         isAdaptive = adaptive;
     }
 
-    public SampleContainer getSampleContainer() {
-        return sampleContainer;
+    public SampleContainer getBandwidthSampleContainer() {
+        return bandwidthSampleContainer;
+    }
+
+    public SampleContainer getWifiSampleContainer() {
+        return wifiSampleContainer;
     }
 
     public int getSampleCount() { return duration / pollInterval; }
-
-    public void setSampleCount(int sampleCount) {
-        this.sampleCount = sampleCount;
-    }
 
     public int getAdaptionInterval() {
         return adaptionInterval;

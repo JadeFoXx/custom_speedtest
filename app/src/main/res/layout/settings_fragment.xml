@@ -123,7 +123,7 @@
                                     android:layout_gravity="center_horizontal"
                                     android:layout_marginTop="10dp"
                                     android:text="@string/label_threading_mode"
-                                    android:textColor="@color/colorBrightText"/>
+                                    android:textColor="@color/colorBrightText" />
 
                                 <View
                                     android:layout_width="match_parent"
@@ -171,7 +171,7 @@
                                     android:layout_gravity="center_horizontal"
                                     android:layout_marginTop="10dp"
                                     android:text="@string/label_average"
-                                    android:textColor="@color/colorBrightText"/>
+                                    android:textColor="@color/colorBrightText" />
 
                                 <View
                                     android:layout_width="match_parent"
@@ -267,7 +267,7 @@
                                     android:layout_gravity="center_horizontal"
                                     android:layout_marginTop="10dp"
                                     android:text="@string/label_buffersize"
-                                    android:textColor="@color/colorBrightText"/>
+                                    android:textColor="@color/colorBrightText" />
 
                                 <View
                                     android:layout_width="match_parent"
@@ -280,8 +280,7 @@
                                     android:id="@+id/settings_fragment_input_buffersize"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/colorBrightText"
-                                    />
+                                    android:textColor="@color/colorBrightText" />
 
                             </LinearLayout>
 
@@ -316,7 +315,7 @@
                                     android:layout_gravity="center_horizontal"
                                     android:layout_marginTop="10dp"
                                     android:text="@string/label_download_duration"
-                                    android:textColor="@color/colorBrightText"/>
+                                    android:textColor="@color/colorBrightText" />
 
                                 <View
                                     android:layout_width="match_parent"
@@ -329,7 +328,7 @@
                                     android:id="@+id/settings_fragment_input_download_duration"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/colorBrightText"/>
+                                    android:textColor="@color/colorBrightText" />
 
                             </LinearLayout>
 
@@ -337,7 +336,9 @@
 
                     </android.support.v7.widget.CardView>
 
-
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp" />
 
                 </LinearLayout>
 
@@ -363,10 +364,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pingtest"
-                        android:textColor="@color/colorBrightText"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="10dp"/>
+                        android:layout_marginTop="10dp"
+                        android:text="Pingtest"
+                        android:textColor="@color/colorBrightText" />
 
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
@@ -408,7 +409,7 @@
                                     android:id="@+id/settings_fragment_input_ping_url"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/colorBrightText"/>
+                                    android:textColor="@color/colorBrightText" />
 
                             </LinearLayout>
 
