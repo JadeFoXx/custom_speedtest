@@ -108,6 +108,7 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
         arcProgressBarSpeed.reset();
         maximumValueDisplay.reset();
         barGraph.reset();
+        lastValueDisplay.reset();
         parameterContainer.getPingtestParameters().getSampleContainer().registerDataContainer(arcProgressBarPing);
         parameterContainer.getSpeedtestParameters().getBandwidthSampleContainer().registerDataContainer(maximumValueDisplay);
         parameterContainer.getSpeedtestParameters().getBandwidthSampleContainer().registerDataContainer(barGraph);
