@@ -103,6 +103,7 @@ public class Test {
                 activeThreads.add(startThread(r));
                 Log.d("Downloadtest: ", "Thread started");
             }
+            speedtestParameters.getThreadSampleContainer().addSample(activeThreads.size());
             while (speedtestParameters.getBandwidthSampleContainer().getAllSamples().size() < speedtestParameters.getSampleCount()) {
                 //wait
             }
@@ -110,6 +111,7 @@ public class Test {
             for (int i = 0; i < speedtestParameters.getMinThreadCount(); i++) {
                 activeThreads.add(startThread(r));
             }
+            speedtestParameters.getThreadSampleContainer().addSample(activeThreads.size());
             nox.sleep(speedtestParameters.getAdaptInterval());
             while (speedtestParameters.getBandwidthSampleContainer().getAllSamples().size() < speedtestParameters.getSampleCount()) {
                 double probeOne = new Calc().average(speedtestParameters.getBandwidthSampleContainer().getAllSamples());

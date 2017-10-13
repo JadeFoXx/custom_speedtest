@@ -44,7 +44,6 @@ public class MaximumValueDisplay implements Pushable<ArrayList<Double>> {
             display(value);
         }
     }
-
     private void display(final Double value) {
         parentActivity.runOnUiThread(new Runnable() {
             @Override

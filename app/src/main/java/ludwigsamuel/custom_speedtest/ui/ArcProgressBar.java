@@ -23,7 +23,7 @@ import ludwigsamuel.custom_speedtest.util.Calc;
 import ludwigsamuel.custom_speedtest.util.SpeedtestParameters;
 
 /**
- * Created by bruce on 11/6/14.
+ * Created by Ludwig Samuel on 01/01/2017.
  */
 public class ArcProgressBar extends View implements Pushable<ArrayList<Double>> {
 

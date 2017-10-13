@@ -49,9 +49,9 @@ public class SpeedtestParameters {
     private SampleContainer<Integer> threadSampleContainer;
 
     public SpeedtestParameters() {
-        bandwidthSampleContainer = new SampleContainer<Double>();
-        wifiSampleContainer = new SampleContainer<Integer>();
-        threadSampleContainer = new SampleContainer<Integer>();
+        bandwidthSampleContainer = new SampleContainer<>();
+        wifiSampleContainer = new SampleContainer<>();
+        threadSampleContainer = new SampleContainer<>();
         try {
             fileURL = new URL(DEFAULT_FILE_URL);
         } catch (MalformedURLException e) {
