@@ -117,10 +117,12 @@ public class Test {
                 double probeTwo = new Calc().average(speedtestParameters.getBandwidthSampleContainer().getAllSamples());
                 if (probeOne < probeTwo && Math.abs(probeOne - probeTwo) > speedtestParameters.getAdaptThreshold() && activeThreads.size() < speedtestParameters.getMaxThreadCount()) {
                     activeThreads.add(startThread(r));
+                    speedtestParameters.getThreadSampleContainer().addSample(activeThreads.size());
                 } else if (probeOne > probeTwo && Math.abs(probeOne - probeTwo) > speedtestParameters.getAdaptThreshold() && activeThreads.size() > speedtestParameters.getMinThreadCount()) {
                     Thread thread = activeThreads.get(activeThreads.size() - 1);
                     activeThreads.remove(thread);
                     thread.interrupt();
+                    speedtestParameters.getThreadSampleContainer().addSample(activeThreads.size());
                 }
             }
         }

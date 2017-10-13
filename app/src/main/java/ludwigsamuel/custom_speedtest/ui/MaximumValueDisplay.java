@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Created by secur on 7/17/2017.
  */
 
-public class MaximumDisplay implements Pushable<ArrayList<Double>> {
+public class MaximumValueDisplay implements Pushable<ArrayList<Double>> {
 
 
     private double maximum = 0;
@@ -18,7 +18,7 @@ public class MaximumDisplay implements Pushable<ArrayList<Double>> {
     private Double multiplier;
 
 
-    public MaximumDisplay(Activity activity, TextView tv) {
+    public MaximumValueDisplay(Activity activity, TextView tv) {
         parentActivity = activity;
         textView = tv;
     }

@@ -18,7 +18,7 @@ public class SpeedtestParameters {
     public static final int DEFAULT_DURATION = 15000;
     public static final int DEFAULT_POLL_INTERVAL = 100;
     public static final int DEFAULT_ADAPT_INTERVAL = 1000;
-    public static final int DEFAULT_ADAPT_THRESHHOLD = 10000;
+    public static final int DEFAULT_ADAPT_THRESHHOLD = 1000;
     public static final int DEFAULT_SINGLE_THREAD_COUNT = 1;
     public static final int DEFAULT_MULTI_THREAD_COUNT = 5;
     public static final int DEFAULT_MIN_THREAD_COUNT = 1;
@@ -44,12 +44,14 @@ public class SpeedtestParameters {
     private int duration;
     private int adaptInterval;
     private int adaptThreshold;
-    private SampleContainer bandwidthSampleContainer;
-    private SampleContainer wifiSampleContainer;
+    private SampleContainer<Double> bandwidthSampleContainer;
+    private SampleContainer<Integer> wifiSampleContainer;
+    private SampleContainer<Integer> threadSampleContainer;
 
     public SpeedtestParameters() {
-        bandwidthSampleContainer = new SampleContainer();
-        wifiSampleContainer = new SampleContainer();
+        bandwidthSampleContainer = new SampleContainer<Double>();
+        wifiSampleContainer = new SampleContainer<Integer>();
+        threadSampleContainer = new SampleContainer<Integer>();
         try {
             fileURL = new URL(DEFAULT_FILE_URL);
         } catch (MalformedURLException e) {
@@ -143,12 +145,16 @@ public class SpeedtestParameters {
         this.duration = duration;
     }
 
-    public SampleContainer getBandwidthSampleContainer() {
+    public SampleContainer<Double> getBandwidthSampleContainer() {
         return bandwidthSampleContainer;
     }
 
-    public SampleContainer getWifiSampleContainer() {
+    public SampleContainer<Integer> getWifiSampleContainer() {
         return wifiSampleContainer;
+    }
+
+    public SampleContainer<Integer> getThreadSampleContainer() {
+        return threadSampleContainer;
     }
 
     public int getSampleCount() {

@@ -42,9 +42,11 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
     private ArcProgressBar arcProgressBarPing;
     private ArcProgressBar arcProgressBarSpeed;
     private TextView maximumDisplayTextView;
-    private MaximumDisplay maximumDisplay;
+    private MaximumValueDisplay maximumValueDisplay;
     private BarGraph barGraph;
     private LinearLayout barGraphLayout;
+    private LastValueDisplay lastValueDisplay;
+    private TextView threadCountDisplay;
     private State state;
 
 
@@ -86,10 +88,12 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
         arcProgressBarSpeed.setMultiplier(0.001);
         arcProgressBarSpeed.setDisplayProgressDouble(true);
         maximumDisplayTextView = (TextView) view.findViewById(R.id.test_fragment_label_max);
-        maximumDisplay = new MaximumDisplay(parentActivity, maximumDisplayTextView);
-        maximumDisplay.setMultiplier(0.001);
+        maximumValueDisplay = new MaximumValueDisplay(parentActivity, maximumDisplayTextView);
+        maximumValueDisplay.setMultiplier(0.001);
         barGraphLayout = (LinearLayout) view.findViewById(R.id.test_fragment_bargraph);
         barGraph = new BarGraph(parentActivity, barGraphLayout);
+        threadCountDisplay = (TextView)view.findViewById(R.id.test_fragment_stats_thread_value);
+        lastValueDisplay = new LastValueDisplay(parentActivity, threadCountDisplay);
         return view;
     }
 
@@ -102,12 +106,13 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
     public void start(ParameterContainer parameterContainer) {
         arcProgressBarPing.reset();
         arcProgressBarSpeed.reset();
-        maximumDisplay.reset();
+        maximumValueDisplay.reset();
         barGraph.reset();
         parameterContainer.getPingtestParameters().getSampleContainer().registerDataContainer(arcProgressBarPing);
-        parameterContainer.getSpeedtestParameters().getBandwidthSampleContainer().registerDataContainer(maximumDisplay);
+        parameterContainer.getSpeedtestParameters().getBandwidthSampleContainer().registerDataContainer(maximumValueDisplay);
         parameterContainer.getSpeedtestParameters().getBandwidthSampleContainer().registerDataContainer(barGraph);
         parameterContainer.getSpeedtestParameters().getBandwidthSampleContainer().registerDataContainer(arcProgressBarSpeed);
+        parameterContainer.getSpeedtestParameters().getThreadSampleContainer().registerDataContainer(lastValueDisplay);
         barGraph.setSampleCount(parameterContainer.getSpeedtestParameters().getDuration() / parameterContainer.getSpeedtestParameters().getPollInterval());
         new AsyncTest().execute(parameterContainer);
     }
@@ -118,7 +123,7 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
         protected void onPreExecute() {
             Log.d("AsyncTest", "Started");
             Animator.expand(statusCardView, 10);
-            Animator.collapse(statsCardViewContainer, 10);
+            Animator.expand(statsCardViewContainer, 10);
         }
 
         @Override
@@ -134,7 +139,6 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
                 state = State.TESTING_DOWNLOAD;
                 publishProgress(parameterContainer);
                 test.speed(parameterContainer.getSpeedtestParameters());
-
             }
             return null;
         }
@@ -162,7 +166,6 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
             statusLabel.setText("Completed");
             timeProgressBar.setIndeterminate(false);
             Animator.collapse(statusCardView, 10);
-            Animator.expand(statsCardViewContainer, 10);
         }
     }
 
