@@ -45,8 +45,10 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
     private MaximumValueDisplay maximumValueDisplay;
     private BarGraph barGraph;
     private LinearLayout barGraphLayout;
-    private LastValueDisplay lastValueDisplay;
+    private LastValueDisplay lastValueDisplayThread;
     private TextView threadCountDisplay;
+    private LastValueDisplay lastValueDisplayWifi;
+    private TextView wifiStrengthDisplay;
     private State state;
 
 
@@ -93,7 +95,9 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
         barGraphLayout = (LinearLayout) view.findViewById(R.id.test_fragment_bargraph);
         barGraph = new BarGraph(parentActivity, barGraphLayout);
         threadCountDisplay = (TextView)view.findViewById(R.id.test_fragment_stats_thread_value);
-        lastValueDisplay = new LastValueDisplay(parentActivity, threadCountDisplay);
+        lastValueDisplayThread = new LastValueDisplay(parentActivity, threadCountDisplay);
+        wifiStrengthDisplay = (TextView)view.findViewById(R.id.test_fragment_stats_wifi_value);
+        lastValueDisplayWifi = new LastValueDisplay(parentActivity, wifiStrengthDisplay);
         return view;
     }
 
@@ -108,12 +112,14 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
         arcProgressBarSpeed.reset();
         maximumValueDisplay.reset();
         barGraph.reset();
-        lastValueDisplay.reset();
+        lastValueDisplayThread.reset();
+        lastValueDisplayWifi.reset();
         parameterContainer.getPingtestParameters().getSampleContainer().registerDataContainer(arcProgressBarPing);
         parameterContainer.getSpeedtestParameters().getBandwidthSampleContainer().registerDataContainer(maximumValueDisplay);
         parameterContainer.getSpeedtestParameters().getBandwidthSampleContainer().registerDataContainer(barGraph);
         parameterContainer.getSpeedtestParameters().getBandwidthSampleContainer().registerDataContainer(arcProgressBarSpeed);
-        parameterContainer.getSpeedtestParameters().getThreadSampleContainer().registerDataContainer(lastValueDisplay);
+        parameterContainer.getSpeedtestParameters().getThreadSampleContainer().registerDataContainer(lastValueDisplayThread);
+        parameterContainer.getSpeedtestParameters().getWifiSampleContainer().registerDataContainer(lastValueDisplayWifi);
         barGraph.setSampleCount(parameterContainer.getSpeedtestParameters().getDuration() / parameterContainer.getSpeedtestParameters().getPollInterval());
         new AsyncTest().execute(parameterContainer);
     }

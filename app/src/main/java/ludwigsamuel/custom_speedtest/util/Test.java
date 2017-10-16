@@ -11,6 +11,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -90,23 +92,22 @@ public class Test {
             @Override
             public void run() {
                 try {
-                    boolean result = generateTraffic(speedtestParameters.getFileURL(), speedtestParameters.getBufferSize(), speedtestParameters.getBandwidthSampleContainer(), speedtestParameters.getSampleCount());
+                    generateTraffic(speedtestParameters.getFileURL(), speedtestParameters.getBufferSize(), speedtestParameters.getBandwidthSampleContainer(), speedtestParameters.getSampleCount());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
-        BandwidthSampler bandwidthSampler = new BandwidthSampler();
-        bandwidthSampler.startSampling(speedtestParameters);
+        WifiStrengthSampler wifiStrengthSampler = new WifiStrengthSampler(speedtestParameters.getWifiSampleContainer(), speedtestParameters.getDuration()/1000);
+        BandwidthSampler bandwidthSampler = new BandwidthSampler(speedtestParameters.getBandwidthSampleContainer(), speedtestParameters.getSampleCount());
+        Timer bandwidthTimer = new Timer();
+        bandwidthTimer.schedule(bandwidthSampler, 0, speedtestParameters.getPollInterval());
         if (!speedtestParameters.isAdaptive()) {
             for (int i = 0; i < speedtestParameters.getThreadCount(); i++) {
                 activeThreads.add(startThread(r));
                 Log.d("Downloadtest: ", "Thread started");
             }
             speedtestParameters.getThreadSampleContainer().addSample(activeThreads.size());
-            while (speedtestParameters.getBandwidthSampleContainer().getAllSamples().size() < speedtestParameters.getSampleCount()) {
-                //wait
-            }
         } else {
             for (int i = 0; i < speedtestParameters.getMinThreadCount(); i++) {
                 activeThreads.add(startThread(r));
@@ -128,7 +129,6 @@ public class Test {
                 }
             }
         }
-        bandwidthSampler.stopSampling();
     }
 
     private Thread startThread(Runnable r) {

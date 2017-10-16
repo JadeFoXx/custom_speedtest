@@ -2,39 +2,43 @@ package ludwigsamuel.custom_speedtest.util;
 
 import android.net.TrafficStats;
 
+import java.util.TimerTask;
+
 import ludwigsamuel.custom_speedtest.data.SampleContainer;
 
 /**
  * Created by Ludwig Samuel on 11-Nov-16.
  */
 
-public class BandwidthSampler {
-    private Thread samplingThread;
-    private boolean isSampling;
+public class BandwidthSampler extends TimerTask {
 
-    public void startSampling(final SpeedtestParameters parameters) {
-        isSampling = true;
-        samplingThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Nox nox = new Nox();
-                while (isSampling) {
-                    long startTime = System.currentTimeMillis();
-                    long startBytes = TrafficStats.getTotalRxBytes();
-                    nox.sleep(parameters.getPollInterval());
-                    long endTime = System.currentTimeMillis();
-                    long endBytes = TrafficStats.getTotalRxBytes();
-                    double sample = ((endBytes - startBytes) * 8) / (endTime - startTime);
-                    if(isSampling) {
-                        parameters.getBandwidthSampleContainer().addSample(sample);
-                    }
-                }
-            }
-        });
-        samplingThread.start();
+
+    private SampleContainer sampleContainer;
+    private long startTime = 0;
+    private long startBytes = 0;
+    private long endTime = 0;
+    private long endBytes = 0;
+    private boolean firstRepetition = true;
+    private int maxSamples;
+
+    public BandwidthSampler(SampleContainer sampleContainer, int maxSamples) {
+        this.sampleContainer = sampleContainer;
+        this.maxSamples = maxSamples;
     }
 
-    public void stopSampling() {isSampling = false;}
-
-    public boolean isSampling() {return isSampling;}
+    @Override
+    public void run() {
+        if(sampleContainer.getAllSamples().size() >= maxSamples) {
+            this.cancel();
+        }
+        endTime = System.currentTimeMillis();
+        endBytes = TrafficStats.getTotalRxBytes();
+        if(!firstRepetition) {
+            double sample = ((endBytes - startBytes) * 8) / (endTime - startTime);
+            sampleContainer.addSample(sample);
+        }
+        startTime = System.currentTimeMillis();
+        startBytes = TrafficStats.getTotalRxBytes();
+        firstRepetition = false;
+    }
 }
