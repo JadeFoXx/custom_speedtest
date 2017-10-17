@@ -25,6 +25,7 @@ public class SpeedtestParameters {
     public static final int DEFAULT_MULTI_THREAD_COUNT = 5;
     public static final int DEFAULT_MIN_THREAD_COUNT = 1;
     public static final int DEFAULT_MAX_THREAD_COUNT = 10;
+    public static final int DEFAULT_WIFI_INTERVAL = 500;
 
     public enum AverageMode {
         STANDARD, SPEEDTEST_DOT_NET
@@ -34,7 +35,11 @@ public class SpeedtestParameters {
         SINGLE, MULTI, ADAPTIVE
     }
 
+    public enum State {
+        TESTING, IDLE
+    }
 
+    private State state;
     private URL fileURL;
     private int bufferSize;
     private AverageMode averageMode;
@@ -46,11 +51,13 @@ public class SpeedtestParameters {
     private int duration;
     private int adaptInterval;
     private int adaptThreshold;
+    private int wifiIntervall;
     private SampleContainer<Double> bandwidthSampleContainer;
     private SampleContainer<Integer> wifiSampleContainer;
     private SampleContainer<Integer> threadSampleContainer;
 
     public SpeedtestParameters() {
+        state = State.IDLE;
         bandwidthSampleContainer = new SampleContainer<>();
         wifiSampleContainer = new SampleContainer<>();
         threadSampleContainer = new SampleContainer<>();
@@ -69,6 +76,15 @@ public class SpeedtestParameters {
         duration = DEFAULT_DURATION;
         adaptInterval = DEFAULT_ADAPT_INTERVAL;
         adaptThreshold = DEFAULT_ADAPT_THRESHHOLD;
+        wifiIntervall = DEFAULT_WIFI_INTERVAL;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     public URL getFileURL() {
@@ -177,6 +193,14 @@ public class SpeedtestParameters {
 
     public void setAdaptThreshold(int adaptThreshold) {
         this.adaptThreshold = adaptThreshold;
+    }
+
+    public int getWifiIntervall() {
+        return wifiIntervall;
+    }
+
+    public void setWifiIntervall(int wifiIntervall) {
+        this.wifiIntervall = wifiIntervall;
     }
 
     public boolean isAdaptive() {

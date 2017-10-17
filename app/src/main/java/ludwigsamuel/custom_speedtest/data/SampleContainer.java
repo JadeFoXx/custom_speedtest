@@ -12,31 +12,40 @@ import ludwigsamuel.custom_speedtest.ui.Pushable;
  * Created by Ludwig Samuel on 11-Nov-16.
  */
 
-public class SampleContainer<T> {
+public class SampleContainer<T> extends ArrayList<T> {
 
-    private ArrayList<T> samples;
     private List<Pushable> pushables;
 
     public SampleContainer() {
-        samples = new ArrayList<>();
         pushables = new ArrayList<>();
     }
 
-    public void addSample(T sample) {
+    @Override
+    public boolean add(T sample) {
+        boolean result = false;
         if (sample != null) {
-            samples.add(sample);
+            result = super.add(sample);
             Log.d("addSample", "sample added: " + sample);
         }
         for (Pushable p : pushables) {
-            p.push(samples);
+            p.push(this);
+        }
+        return result;
+    }
+    /*
+    public void addSample(T sample) {
+        if (sample != null) {
+            add(sample);
+            Log.d("addSample", "sample added: " + sample);
+        }
+        for (Pushable p : pushables) {
+            p.push(this);
         }
     }
+    */
 
     public void registerDataContainer(Pushable container) {
         pushables.add(container);
     }
 
-    public ArrayList<T> getAllSamples() {
-        return samples;
-    }
 }

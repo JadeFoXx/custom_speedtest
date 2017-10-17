@@ -1,82 +1,69 @@
 package ludwigsamuel.custom_speedtest.ui;
 
-import android.app.Activity;
-import android.view.Gravity;
-import android.widget.LinearLayout;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.os.Handler;
+import android.util.AttributeSet;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ludwigsamuel.custom_speedtest.R;
-import ludwigsamuel.custom_speedtest.util.App;
 
 /**
  * Created by Ludwig Samuel on 12-Nov-16.
  */
 
-public class BarGraph implements Pushable<ArrayList<Double>> {
+public class BarGraph extends View implements Pushable<ArrayList<Double>> {
 
-    private int sampleCount;
-    private LinearLayout rootLayout;
+
+    private Paint paint;
     private List<Bar> bars;
-    private Activity activity;
     private Double max;
     private Double multiplier;
+    private float lastX;
+    private Handler handler;
 
-    public BarGraph(Activity activity, LinearLayout parentLayout) {
-        this.activity = activity;
-        this.rootLayout = parentLayout;
-        this.bars = new ArrayList<>();
-        parentLayout.removeAllViews();
+    public BarGraph(Context context) {
+        this(context, null);
     }
 
-    public void setSampleCount(int count) {
-        sampleCount = count;
+    public BarGraph(Context context, AttributeSet attributeSet) {
+        this(context, attributeSet, 0);
     }
 
-    public int getRootHeight() {
-        return rootLayout.getHeight();
+    public BarGraph(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        handler = new Handler(context.getMainLooper());
+        bars = new ArrayList<>();
+        paint = new Paint();
+        lastX = 0;
     }
 
-    public int getRootWidth() {
-        return rootLayout.getWidth();
+    @Override
+    protected void onDraw(Canvas canvas) {
+        canvas.drawColor(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.CLEAR);
+        paint.setColor(getResources().getColor(R.color.colorWhite));
+        paint.setStrokeWidth(0);
+        for(Bar b : bars) {
+            canvas.drawRect(b.getX(), b.getY(), b.getX()+b.getWidth(), b.getY()+b.getHeight(), paint);
+        }
     }
 
     public void addBar(final double sample) {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (max == null) {
-                    max = sample;
-                }
-                if (max < sample) {
-                    max = sample;
-                    redraw();
-                }
-                LinearLayout view = new LinearLayout(activity);
-                Bar bar = new Bar(view, sample);
-                bars.add(bar);
-                draw(bar, false);
-            }
-        });
-    }
 
-    private void draw(Bar bar, boolean redraw) {
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(getDefaultBarWidth(), getRelativeBarHeight(getPercentageOfMax(bar.getSample())));
-        layoutParams.gravity = Gravity.BOTTOM;
-        bar.getView().setLayoutParams(layoutParams);
-        if (!redraw) {
-            bar.getView().setBackgroundColor(App.getAppContext().getResources().getColor(R.color.colorWhite));
-            rootLayout.addView(bar.getView());
+        if(max == null || max < sample) {
+            max = sample;
         }
-        rootLayout.invalidate();
-        bar.getView().requestLayout();
-    }
+        Bar bar = new Bar(sample, lastX, getHeight()-getRelativeBarHeight(getPercentageOfMax(sample)), getDefaultBarWidth(), getHeight());
+        bars.add(bar);
 
-    private void redraw() {
-        for (int i = 0; i < bars.size(); i++) {
-            draw(bars.get(i), true);
-        }
+        invalidate();
+        lastX += getDefaultBarWidth();
     }
 
     private int getPercentageOfMax(double sample) {
@@ -85,7 +72,7 @@ public class BarGraph implements Pushable<ArrayList<Double>> {
     }
 
     private Integer getRelativeBarWidth(int sampleCount) {
-        return (getRootWidth() / sampleCount);
+        return (getWidth() / sampleCount);
     }
 
     private Integer getDefaultBarWidth() {
@@ -93,14 +80,20 @@ public class BarGraph implements Pushable<ArrayList<Double>> {
     }
 
     private Integer getRelativeBarHeight(int percentage) {
-        int i = (int) ((getRootHeight() / 100d) * percentage);
+        int i = (int) ((getHeight() / 100d) * percentage);
         return i;
     }
 
     public void reset() {
         max = null;
         bars.clear();
-        rootLayout.removeAllViews();
+        lastX = 0;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                invalidate();
+            }
+        });
     }
 
     @Override
@@ -117,8 +110,14 @@ public class BarGraph implements Pushable<ArrayList<Double>> {
     }
 
     @Override
-    public void push(ArrayList<Double> value) {
-        addBar(value.get(value.size()-1) * getMultiplier());
+    public void push(final ArrayList<Double> value) {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                addBar(value.get(value.size()-1) * getMultiplier());
+            }
+        };
+        handler.post(r);
     }
 
 }

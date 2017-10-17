@@ -42,7 +42,7 @@ public class Test {
             pingProcess.destroy();
             List<Double> pings = parsePingResultToDoubles(pingResult);
             for (Double d : pings) {
-                pingtestParameters.getSampleContainer().addSample(d);
+                pingtestParameters.getSampleContainer().add(d);
             }
         } catch (IOException ioE) {
             ioE.printStackTrace();
@@ -60,15 +60,15 @@ public class Test {
         return doubles;
     }
 
-    private boolean generateTraffic(URL url, int buffersize, SampleContainer samples, int sampleMaxCount) {
-        URLConnection urlConnection = prepareConnection(url);
+    private boolean generateTraffic(SpeedtestParameters speedtestParameters) {
+        URLConnection urlConnection = prepareConnection(speedtestParameters.getFileURL());
         if (urlConnection != null) {
             try {
                 urlConnection.connect();
                 InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
-                byte[] buffer = new byte[buffersize];
+                byte[] buffer = new byte[speedtestParameters.getBufferSize()];
                 try {
-                    while (inputStream.read(buffer) != -1 && samples.getAllSamples().size() < sampleMaxCount && !Thread.currentThread().isInterrupted()) {
+                    while (inputStream.read(buffer) != -1 && speedtestParameters.getState() == SpeedtestParameters.State.TESTING && !Thread.currentThread().isInterrupted()) {
                         //create traffic
                     }
                 } finally {
@@ -92,14 +92,16 @@ public class Test {
             @Override
             public void run() {
                 try {
-                    generateTraffic(speedtestParameters.getFileURL(), speedtestParameters.getBufferSize(), speedtestParameters.getBandwidthSampleContainer(), speedtestParameters.getSampleCount());
+                    generateTraffic(speedtestParameters);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
-        WifiStrengthSampler wifiStrengthSampler = new WifiStrengthSampler(speedtestParameters.getWifiSampleContainer(), speedtestParameters.getDuration()/1000);
-        BandwidthSampler bandwidthSampler = new BandwidthSampler(speedtestParameters.getBandwidthSampleContainer(), speedtestParameters.getSampleCount());
+        WifiStrengthSampler wifiStrengthSampler = new WifiStrengthSampler(speedtestParameters);
+        Timer wifiTimer = new Timer();
+        wifiTimer.schedule(wifiStrengthSampler, 0, speedtestParameters.getWifiIntervall());
+        BandwidthSampler bandwidthSampler = new BandwidthSampler(speedtestParameters);
         Timer bandwidthTimer = new Timer();
         bandwidthTimer.schedule(bandwidthSampler, 0, speedtestParameters.getPollInterval());
         if (!speedtestParameters.isAdaptive()) {
@@ -107,25 +109,25 @@ public class Test {
                 activeThreads.add(startThread(r));
                 Log.d("Downloadtest: ", "Thread started");
             }
-            speedtestParameters.getThreadSampleContainer().addSample(activeThreads.size());
+            speedtestParameters.getThreadSampleContainer().add(activeThreads.size());
         } else {
             for (int i = 0; i < speedtestParameters.getMinThreadCount(); i++) {
                 activeThreads.add(startThread(r));
             }
-            speedtestParameters.getThreadSampleContainer().addSample(activeThreads.size());
+            speedtestParameters.getThreadSampleContainer().add(activeThreads.size());
             nox.sleep(speedtestParameters.getAdaptInterval());
-            while (speedtestParameters.getBandwidthSampleContainer().getAllSamples().size() < speedtestParameters.getSampleCount()) {
-                double probeOne = new Calc().average(speedtestParameters.getBandwidthSampleContainer().getAllSamples());
+            while (speedtestParameters.getBandwidthSampleContainer().size() < speedtestParameters.getSampleCount()) {
+                double probeOne = new Calc().average(speedtestParameters.getBandwidthSampleContainer());
                 nox.sleep(speedtestParameters.getAdaptInterval());
-                double probeTwo = new Calc().average(speedtestParameters.getBandwidthSampleContainer().getAllSamples());
+                double probeTwo = new Calc().average(speedtestParameters.getBandwidthSampleContainer());
                 if (probeOne < probeTwo && Math.abs(probeOne - probeTwo) > speedtestParameters.getAdaptThreshold() && activeThreads.size() < speedtestParameters.getMaxThreadCount()) {
                     activeThreads.add(startThread(r));
-                    speedtestParameters.getThreadSampleContainer().addSample(activeThreads.size());
+                    speedtestParameters.getThreadSampleContainer().add(activeThreads.size());
                 } else if (probeOne > probeTwo && Math.abs(probeOne - probeTwo) > speedtestParameters.getAdaptThreshold() && activeThreads.size() > speedtestParameters.getMinThreadCount()) {
                     Thread thread = activeThreads.get(activeThreads.size() - 1);
                     activeThreads.remove(thread);
                     thread.interrupt();
-                    speedtestParameters.getThreadSampleContainer().addSample(activeThreads.size());
+                    speedtestParameters.getThreadSampleContainer().add(activeThreads.size());
                 }
             }
         }

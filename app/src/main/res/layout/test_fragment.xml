@@ -217,13 +217,11 @@
                         android:layout_marginStart="5dp"
                         android:orientation="horizontal">
 
-                        <LinearLayout
+                        <ludwigsamuel.custom_speedtest.ui.BarGraph
                             android:id="@+id/test_fragment_bargraph"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="100dp"
-                            android:orientation="horizontal">
-
-                        </LinearLayout>
+                            android:background="@color/colorPrimary"/>
 
                     </LinearLayout>
 

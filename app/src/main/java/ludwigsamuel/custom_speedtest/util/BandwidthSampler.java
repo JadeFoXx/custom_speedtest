@@ -13,29 +13,28 @@ import ludwigsamuel.custom_speedtest.data.SampleContainer;
 public class BandwidthSampler extends TimerTask {
 
 
-    private SampleContainer sampleContainer;
+    private SpeedtestParameters speedtestParameters;
     private long startTime = 0;
     private long startBytes = 0;
     private long endTime = 0;
     private long endBytes = 0;
     private boolean firstRepetition = true;
-    private int maxSamples;
 
-    public BandwidthSampler(SampleContainer sampleContainer, int maxSamples) {
-        this.sampleContainer = sampleContainer;
-        this.maxSamples = maxSamples;
+    public BandwidthSampler(SpeedtestParameters speedtestParameters) {
+        this.speedtestParameters = speedtestParameters;
     }
 
     @Override
     public void run() {
-        if(sampleContainer.getAllSamples().size() >= maxSamples) {
-            this.cancel();
+        if (speedtestParameters.getBandwidthSampleContainer().size() >= speedtestParameters.getSampleCount()) {
+            speedtestParameters.setState(SpeedtestParameters.State.IDLE);
+            cancel();
         }
         endTime = System.currentTimeMillis();
         endBytes = TrafficStats.getTotalRxBytes();
-        if(!firstRepetition) {
+        if (!firstRepetition) {
             double sample = ((endBytes - startBytes) * 8) / (endTime - startTime);
-            sampleContainer.addSample(sample);
+            speedtestParameters.getBandwidthSampleContainer().add(sample);
         }
         startTime = System.currentTimeMillis();
         startBytes = TrafficStats.getTotalRxBytes();

@@ -44,7 +44,6 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
     private TextView maximumDisplayTextView;
     private MaximumValueDisplay maximumValueDisplay;
     private BarGraph barGraph;
-    private LinearLayout barGraphLayout;
     private LastValueDisplay lastValueDisplayThread;
     private TextView threadCountDisplay;
     private LastValueDisplay lastValueDisplayWifi;
@@ -92,8 +91,7 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
         maximumDisplayTextView = (TextView) view.findViewById(R.id.test_fragment_label_max);
         maximumValueDisplay = new MaximumValueDisplay(parentActivity, maximumDisplayTextView);
         maximumValueDisplay.setMultiplier(0.001);
-        barGraphLayout = (LinearLayout) view.findViewById(R.id.test_fragment_bargraph);
-        barGraph = new BarGraph(parentActivity, barGraphLayout);
+        barGraph = (BarGraph)view.findViewById(R.id.test_fragment_bargraph);
         threadCountDisplay = (TextView)view.findViewById(R.id.test_fragment_stats_thread_value);
         lastValueDisplayThread = new LastValueDisplay(parentActivity, threadCountDisplay);
         wifiStrengthDisplay = (TextView)view.findViewById(R.id.test_fragment_stats_wifi_value);
@@ -120,7 +118,6 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
         parameterContainer.getSpeedtestParameters().getBandwidthSampleContainer().registerDataContainer(arcProgressBarSpeed);
         parameterContainer.getSpeedtestParameters().getThreadSampleContainer().registerDataContainer(lastValueDisplayThread);
         parameterContainer.getSpeedtestParameters().getWifiSampleContainer().registerDataContainer(lastValueDisplayWifi);
-        barGraph.setSampleCount(parameterContainer.getSpeedtestParameters().getDuration() / parameterContainer.getSpeedtestParameters().getPollInterval());
         new AsyncTest().execute(parameterContainer);
     }
 
