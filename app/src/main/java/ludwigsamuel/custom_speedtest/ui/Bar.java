@@ -12,12 +12,10 @@ public class Bar {
     private float width;
     private float height;
 
-    public Bar(double sample, float x, float y, float width, float height) {
+    public Bar(double sample, float x, float width) {
         this.sample = sample;
         this.x = x;
-        this.y = y;
         this.width = width;
-        this.height = height;
     }
 
     public double getSample() {
@@ -36,14 +34,6 @@ public class Bar {
         this.x = x;
     }
 
-    public float getY() {
-        return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
     public float getWidth() {
         return width;
     }
@@ -52,11 +42,8 @@ public class Bar {
         this.width = width;
     }
 
-    public float getHeight() {
-        return height;
-    }
-
-    public void setHeight(float height) {
-        this.height = height;
+    public int calculateHeight(double max, int height) {
+        int percentage = (int) ((sample / max) * 100);
+        return (int) (height-((height / 100d) * percentage));
     }
 }

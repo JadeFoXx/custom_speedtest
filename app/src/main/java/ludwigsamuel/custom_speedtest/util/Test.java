@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -92,12 +93,13 @@ public class Test {
             @Override
             public void run() {
                 try {
-                    generateTraffic(speedtestParameters);
+                     generateTraffic(speedtestParameters);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
+        speedtestParameters.setState(SpeedtestParameters.State.TESTING);
         WifiStrengthSampler wifiStrengthSampler = new WifiStrengthSampler(speedtestParameters);
         Timer wifiTimer = new Timer();
         wifiTimer.schedule(wifiStrengthSampler, 0, speedtestParameters.getWifiIntervall());
@@ -116,10 +118,10 @@ public class Test {
             }
             speedtestParameters.getThreadSampleContainer().add(activeThreads.size());
             nox.sleep(speedtestParameters.getAdaptInterval());
-            while (speedtestParameters.getBandwidthSampleContainer().size() < speedtestParameters.getSampleCount()) {
-                double probeOne = new Calc().average(speedtestParameters.getBandwidthSampleContainer());
+            while (speedtestParameters.getState() == SpeedtestParameters.State.TESTING) {
+                double probeOne = new Calc().average(getProbeSamples(speedtestParameters.getBandwidthSampleContainer()));
                 nox.sleep(speedtestParameters.getAdaptInterval());
-                double probeTwo = new Calc().average(speedtestParameters.getBandwidthSampleContainer());
+                double probeTwo = new Calc().average(getProbeSamples(speedtestParameters.getBandwidthSampleContainer()));
                 if (probeOne < probeTwo && Math.abs(probeOne - probeTwo) > speedtestParameters.getAdaptThreshold() && activeThreads.size() < speedtestParameters.getMaxThreadCount()) {
                     activeThreads.add(startThread(r));
                     speedtestParameters.getThreadSampleContainer().add(activeThreads.size());
@@ -131,6 +133,13 @@ public class Test {
                 }
             }
         }
+    }
+
+    private List<Double> getProbeSamples(ArrayList<Double> samples) {
+        if(samples.size() >= 10) {
+            return samples.subList(samples.size()-10, samples.size()-1);
+        }
+        return samples;
     }
 
     private Thread startThread(Runnable r) {

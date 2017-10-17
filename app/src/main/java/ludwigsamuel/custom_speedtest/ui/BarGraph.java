@@ -3,6 +3,7 @@ package ludwigsamuel.custom_speedtest.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.os.Handler;
@@ -38,6 +39,7 @@ public class BarGraph extends View implements Pushable<ArrayList<Double>> {
 
     public BarGraph(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         handler = new Handler(context.getMainLooper());
         bars = new ArrayList<>();
         paint = new Paint();
@@ -46,11 +48,11 @@ public class BarGraph extends View implements Pushable<ArrayList<Double>> {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawColor(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.CLEAR);
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         paint.setColor(getResources().getColor(R.color.colorWhite));
         paint.setStrokeWidth(0);
         for(Bar b : bars) {
-            canvas.drawRect(b.getX(), b.getY(), b.getX()+b.getWidth(), b.getY()+b.getHeight(), paint);
+            canvas.drawRect(b.getX(), b.calculateHeight(max, getHeight()), b.getX()+b.getWidth(), getHeight(), paint);
         }
     }
 
@@ -59,29 +61,10 @@ public class BarGraph extends View implements Pushable<ArrayList<Double>> {
         if(max == null || max < sample) {
             max = sample;
         }
-        Bar bar = new Bar(sample, lastX, getHeight()-getRelativeBarHeight(getPercentageOfMax(sample)), getDefaultBarWidth(), getHeight());
+        Bar bar = new Bar(sample, lastX, 8);
         bars.add(bar);
-
         invalidate();
-        lastX += getDefaultBarWidth();
-    }
-
-    private int getPercentageOfMax(double sample) {
-        int i = (int) ((sample / max) * 100);
-        return i;
-    }
-
-    private Integer getRelativeBarWidth(int sampleCount) {
-        return (getWidth() / sampleCount);
-    }
-
-    private Integer getDefaultBarWidth() {
-        return 8;
-    }
-
-    private Integer getRelativeBarHeight(int percentage) {
-        int i = (int) ((getHeight() / 100d) * percentage);
-        return i;
+        lastX += 8;
     }
 
     public void reset() {
