@@ -135,12 +135,7 @@ public class Test {
         }
     }
 
-    private List<Double> getProbeSamples(ArrayList<Double> samples) {
-        if(samples.size() >= 10) {
-            return samples.subList(samples.size()-10, samples.size()-1);
-        }
-        return samples;
-    }
+
 
     private Thread startThread(Runnable r) {
         Thread thread = new Thread(r);
