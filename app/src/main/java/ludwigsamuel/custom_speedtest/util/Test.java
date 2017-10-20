@@ -24,7 +24,6 @@ import ludwigsamuel.custom_speedtest.data.SampleContainer;
  */
 
 public class Test {
-    private ArrayList<Thread> activeThreads;
     private static final String PINGPATH = "/system/bin/ping -c ";
 
     public void ping(PingtestParameters pingtestParameters) {
@@ -61,99 +60,25 @@ public class Test {
         return doubles;
     }
 
-    private boolean generateTraffic(SpeedtestParameters speedtestParameters) {
-        URLConnection urlConnection = prepareConnection(speedtestParameters.getFileURL());
-        if (urlConnection != null) {
-            try {
-                urlConnection.connect();
-                InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
-                byte[] buffer = new byte[speedtestParameters.getBufferSize()];
-                try {
-                    while (inputStream.read(buffer) != -1 && speedtestParameters.getState() == SpeedtestParameters.State.TESTING && !Thread.currentThread().isInterrupted()) {
-                        //create traffic
-                    }
-                } finally {
-                    inputStream.close();
-                    Log.d("generateTraffic", "generated traffic");
-                    return true;
-                }
-            } catch (IOException ioE) {
-                ioE.printStackTrace();
-                return false;
-            }
-        }
-        return false;
-    }
-
     public void speed(final SpeedtestParameters speedtestParameters) {
-
-        activeThreads = new ArrayList<>();
-        Nox nox = new Nox();
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                     generateTraffic(speedtestParameters);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
         speedtestParameters.setState(SpeedtestParameters.State.TESTING);
+
         WifiStrengthSampler wifiStrengthSampler = new WifiStrengthSampler(speedtestParameters);
         Timer wifiTimer = new Timer();
-        wifiTimer.schedule(wifiStrengthSampler, 0, speedtestParameters.getWifiIntervall());
         BandwidthSampler bandwidthSampler = new BandwidthSampler(speedtestParameters);
         Timer bandwidthTimer = new Timer();
+
+        wifiTimer.schedule(wifiStrengthSampler, 0, speedtestParameters.getWifiInterval());
         bandwidthTimer.schedule(bandwidthSampler, 0, speedtestParameters.getPollInterval());
+
+        ThreadController threadController = new ThreadController(speedtestParameters);
         if (!speedtestParameters.isAdaptive()) {
             for (int i = 0; i < speedtestParameters.getThreadCount(); i++) {
-                activeThreads.add(startThread(r));
-                Log.d("Downloadtest: ", "Thread started");
+                threadController.addThread();
             }
-            speedtestParameters.getThreadSampleContainer().add(activeThreads.size());
         } else {
-            for (int i = 0; i < speedtestParameters.getMinThreadCount(); i++) {
-                activeThreads.add(startThread(r));
-            }
-            speedtestParameters.getThreadSampleContainer().add(activeThreads.size());
-            nox.sleep(speedtestParameters.getAdaptInterval());
-            while (speedtestParameters.getState() == SpeedtestParameters.State.TESTING) {
-                double probeOne = new Calc().average(getProbeSamples(speedtestParameters.getBandwidthSampleContainer()));
-                nox.sleep(speedtestParameters.getAdaptInterval());
-                double probeTwo = new Calc().average(getProbeSamples(speedtestParameters.getBandwidthSampleContainer()));
-                if (probeOne < probeTwo && Math.abs(probeOne - probeTwo) > speedtestParameters.getAdaptThreshold() && activeThreads.size() < speedtestParameters.getMaxThreadCount()) {
-                    activeThreads.add(startThread(r));
-                    speedtestParameters.getThreadSampleContainer().add(activeThreads.size());
-                } else if (probeOne > probeTwo && Math.abs(probeOne - probeTwo) > speedtestParameters.getAdaptThreshold() && activeThreads.size() > speedtestParameters.getMinThreadCount()) {
-                    Thread thread = activeThreads.get(activeThreads.size() - 1);
-                    activeThreads.remove(thread);
-                    thread.interrupt();
-                    speedtestParameters.getThreadSampleContainer().add(activeThreads.size());
-                }
-            }
+            threadController.addThread();
+            threadController.adapt();
         }
     }
-
-
-
-    private Thread startThread(Runnable r) {
-        Thread thread = new Thread(r);
-        thread.setPriority(Thread.MAX_PRIORITY);
-        thread.start();
-        return thread;
-    }
-
-    private URLConnection prepareConnection(URL url) {
-        try {
-            URLConnection urlConnection = url.openConnection();
-            urlConnection.setUseCaches(false);
-            urlConnection.setDoInput(true);
-            return urlConnection;
-        } catch (IOException ioE) {
-            Log.d("prepareConnection", "Exception caught: " + ioE.getMessage());
-            return null;
-        }
-    }
-
 }

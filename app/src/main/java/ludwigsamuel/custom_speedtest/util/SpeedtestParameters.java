@@ -26,6 +26,7 @@ public class SpeedtestParameters {
     public static final int DEFAULT_MIN_THREAD_COUNT = 1;
     public static final int DEFAULT_MAX_THREAD_COUNT = 10;
     public static final int DEFAULT_WIFI_INTERVAL = 500;
+    public static final int DEFAULT_ADAPT_SAMPLE_COUNT = 10;
 
     public enum AverageMode {
         STANDARD, SPEEDTEST_DOT_NET
@@ -51,7 +52,8 @@ public class SpeedtestParameters {
     private int duration;
     private int adaptInterval;
     private int adaptThreshold;
-    private int wifiIntervall;
+    private int adaptSampleCount;
+    private int wifiInterval;
     private SampleContainer<Double> bandwidthSampleContainer;
     private SampleContainer<Integer> wifiSampleContainer;
     private SampleContainer<Integer> threadSampleContainer;
@@ -76,7 +78,8 @@ public class SpeedtestParameters {
         duration = DEFAULT_DURATION;
         adaptInterval = DEFAULT_ADAPT_INTERVAL;
         adaptThreshold = DEFAULT_ADAPT_THRESHHOLD;
-        wifiIntervall = DEFAULT_WIFI_INTERVAL;
+        adaptSampleCount = DEFAULT_ADAPT_SAMPLE_COUNT;
+        wifiInterval = DEFAULT_WIFI_INTERVAL;
     }
 
     public State getState() {
@@ -195,12 +198,20 @@ public class SpeedtestParameters {
         this.adaptThreshold = adaptThreshold;
     }
 
-    public int getWifiIntervall() {
-        return wifiIntervall;
+    public int getAdaptSampleCount() {
+        return adaptSampleCount;
     }
 
-    public void setWifiIntervall(int wifiIntervall) {
-        this.wifiIntervall = wifiIntervall;
+    public void setAdaptSampleCount(int adaptSampleCount) {
+        this.adaptSampleCount = adaptSampleCount;
+    }
+
+    public int getWifiInterval() {
+        return wifiInterval;
+    }
+
+    public void setWifiInterval(int wifiInterval) {
+        this.wifiInterval = wifiInterval;
     }
 
     public boolean isAdaptive() {
