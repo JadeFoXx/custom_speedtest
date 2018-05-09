@@ -38,12 +38,13 @@ public class MaximumValueDisplay implements Pushable<ArrayList<Double>> {
 
     @Override
     public void push(final ArrayList<Double> values) {
-        Double value = values.get(values.size()-1);
+        Double value = values.get(values.size() - 1);
         if (value >= maximum) {
             maximum = value;
             display(value);
         }
     }
+
     private void display(final Double value) {
         parentActivity.runOnUiThread(new Runnable() {
             @Override

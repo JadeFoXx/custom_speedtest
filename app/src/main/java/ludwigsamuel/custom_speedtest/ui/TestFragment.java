@@ -50,7 +50,6 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
     private TextView wifiStrengthDisplay;
     private State state;
 
-
     public static TestFragment newInstance(int page, String title) {
         TestFragment testFragment = new TestFragment();
         Bundle args = new Bundle();
@@ -80,9 +79,9 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
         statusLabel = (TextView) view.findViewById(R.id.test_fragment_status_label);
         timeProgressBar = (ProgressBar) view.findViewById(R.id.main_progressbar_time);
 
-        graphCardViewContainer = (CardView)view.findViewById(R.id.test_fragment_arcgraph_cardview);
-        barGraphCardViewContainer = (CardView)view.findViewById(R.id.test_fragment_bargraph_cardview);
-        statsCardViewContainer = (CardView)view.findViewById(R.id.test_fragment_stats_cardview);
+        graphCardViewContainer = (CardView) view.findViewById(R.id.test_fragment_arcgraph_cardview);
+        barGraphCardViewContainer = (CardView) view.findViewById(R.id.test_fragment_bargraph_cardview);
+        statsCardViewContainer = (CardView) view.findViewById(R.id.test_fragment_stats_cardview);
 
         arcProgressBarPing = (ArcProgressBar) view.findViewById(R.id.test_fragment_arcprogessbar_ping);
         arcProgressBarSpeed = (ArcProgressBar) view.findViewById(R.id.test_fragment_arcprogessbar_speed);
@@ -91,10 +90,10 @@ public class TestFragment extends android.support.v4.app.Fragment implements Vie
         maximumDisplayTextView = (TextView) view.findViewById(R.id.test_fragment_label_max);
         maximumValueDisplay = new MaximumValueDisplay(parentActivity, maximumDisplayTextView);
         maximumValueDisplay.setMultiplier(0.001);
-        barGraph = (BarGraph)view.findViewById(R.id.test_fragment_bargraph);
-        threadCountDisplay = (TextView)view.findViewById(R.id.test_fragment_stats_thread_value);
+        barGraph = (BarGraph) view.findViewById(R.id.test_fragment_bargraph);
+        threadCountDisplay = (TextView) view.findViewById(R.id.test_fragment_stats_thread_value);
         lastValueDisplayThread = new LastValueDisplay(parentActivity, threadCountDisplay);
-        wifiStrengthDisplay = (TextView)view.findViewById(R.id.test_fragment_stats_wifi_value);
+        wifiStrengthDisplay = (TextView) view.findViewById(R.id.test_fragment_stats_wifi_value);
         lastValueDisplayWifi = new LastValueDisplay(parentActivity, wifiStrengthDisplay);
         return view;
     }

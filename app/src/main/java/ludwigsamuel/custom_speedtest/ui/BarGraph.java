@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -43,34 +44,33 @@ public class BarGraph extends View implements Pushable<ArrayList<Double>> {
         handler = new Handler(context.getMainLooper());
         bars = new ArrayList<>();
         paint = new Paint();
-        lastX = 0;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        lastX = 0;
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         paint.setColor(getResources().getColor(R.color.colorWhite));
         paint.setStrokeWidth(0);
-        for(Bar b : bars) {
-            canvas.drawRect(b.getX(), b.calculateHeight(max, getHeight()), b.getX()+b.getWidth(), getHeight(), paint);
+        for (Bar bar : bars) {
+            canvas.drawRect(lastX, bar.calculateHeight(max, getHeight()), lastX + bar.calculateWidth(getWidth(), bars.size()), getHeight(), paint);
+            lastX += bar.calculateWidth(getWidth(), bars.size());
         }
     }
 
     public void addBar(final double sample) {
 
-        if(max == null || max < sample) {
+        if (max == null || max < sample) {
             max = sample;
         }
-        Bar bar = new Bar(sample, lastX, 8);
+        Bar bar = new Bar(sample);
         bars.add(bar);
         invalidate();
-        lastX += 8;
     }
 
     public void reset() {
         max = null;
         bars.clear();
-        lastX = 0;
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -97,7 +97,7 @@ public class BarGraph extends View implements Pushable<ArrayList<Double>> {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                addBar(value.get(value.size()-1) * getMultiplier());
+                addBar(value.get(value.size() - 1) * getMultiplier());
             }
         };
         handler.post(r);

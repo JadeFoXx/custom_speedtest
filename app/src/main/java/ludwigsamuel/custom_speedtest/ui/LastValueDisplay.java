@@ -35,7 +35,7 @@ public class LastValueDisplay implements Pushable<ArrayList<Integer>> {
 
     @Override
     public void push(ArrayList<Integer> value) {
-        display(value.get(value.size()-1));
+        display(value.get(value.size() - 1));
     }
 
     private void display(final Integer value) {

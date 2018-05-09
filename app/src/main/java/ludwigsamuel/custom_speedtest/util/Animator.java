@@ -61,7 +61,7 @@ public class Animator {
         view.startAnimation(fadeIn);
     }
 
-    public static void expand(final View view, int speedMultiplier) {
+    public static void expand(final View view, int durationMultiplier) {
         if (view.getVisibility() == View.GONE) {
 
             view.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -82,12 +82,12 @@ public class Animator {
                 }
             };
 
-            a.setDuration(((int) (targetHeight / view.getContext().getResources().getDisplayMetrics().density)) * speedMultiplier);
+            a.setDuration(((int) (targetHeight / view.getContext().getResources().getDisplayMetrics().density)) * durationMultiplier);
             view.startAnimation(a);
         }
     }
 
-    public static void collapse(final View view, int speedMultiplier) {
+    public static void collapse(final View view, int durationMultiplier) {
         if (view.getVisibility() == View.VISIBLE) {
 
 
@@ -110,7 +110,7 @@ public class Animator {
                 }
             };
 
-            a.setDuration(((int) (initialHeight / view.getContext().getResources().getDisplayMetrics().density)) * speedMultiplier);
+            a.setDuration(((int) (initialHeight / view.getContext().getResources().getDisplayMetrics().density)) * durationMultiplier);
             view.startAnimation(a);
         }
     }

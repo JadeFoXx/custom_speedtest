@@ -90,8 +90,8 @@ public class SettingsFragment extends android.support.v4.app.Fragment implements
         switch (profile) {
             case PROFILE_DEFAULT:
                 if(!init) {
-                    Animator.collapse(speedtestContainer, 5);
-                    Animator.collapse(pingtestContainer, 5);
+                    Animator.collapse(speedtestContainer, 2);
+                    Animator.collapse(pingtestContainer, 2);
                 }
                 break;
             case PROFILE_CUSTOM:
@@ -100,8 +100,8 @@ public class SettingsFragment extends android.support.v4.app.Fragment implements
                 bufferSizeEditText.setText(Integer.toString(SpeedtestParameters.DEFAULT_BUFFER_SIZE));
                 pingUrlEditText.setText(PingtestParameters.DEFAULT_PING_URL);
                 if(!init) {
-                    Animator.expand(speedtestContainer, 5);
-                    Animator.expand(pingtestContainer, 5);
+                    Animator.expand(speedtestContainer, 2);
+                    Animator.expand(pingtestContainer, 2);
                 }
                 break;
         }

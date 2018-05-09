@@ -15,7 +15,6 @@ public class SpeedtestParameters {
 
 
     public static final String DEFAULT_FILE_URL = "http://speedtest.tele2.net/10GB.zip";
-    //public static final String DEFAULT_FILE_URL = "http://download.thinkbroadband.com/1GB.zip";
     public static final int DEFAULT_BUFFER_SIZE = 32768;
     public static final int DEFAULT_DURATION = 15000;
     public static final int DEFAULT_POLL_INTERVAL = 100;

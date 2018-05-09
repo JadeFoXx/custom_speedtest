@@ -7,43 +7,18 @@ package ludwigsamuel.custom_speedtest.ui;
 public class Bar {
 
     private double sample;
-    private float x;
-    private float y;
-    private float width;
-    private float height;
 
-    public Bar(double sample, float x, float width) {
-        this.sample = sample;
-        this.x = x;
-        this.width = width;
-    }
-
-    public double getSample() {
-        return sample;
-    }
-
-    public void setSample(double sample) {
+    public Bar(double sample) {
         this.sample = sample;
     }
 
-    public float getX() {
-        return x;
+    public float calculateWidth(int width, int count) {
+        return ((float)width)/count;
     }
 
-    public void setX(float x) {
-        this.x = x;
-    }
+    public float calculateHeight(double max, int height) {
+        float percentage = (((float)sample / (float)max) * 100f);
+        return ((float)height-(((float)height / 100f) * percentage));
 
-    public float getWidth() {
-        return width;
-    }
-
-    public void setWidth(float width) {
-        this.width = width;
-    }
-
-    public int calculateHeight(double max, int height) {
-        int percentage = (int) ((sample / max) * 100);
-        return (int) (height-((height / 100d) * percentage));
     }
 }

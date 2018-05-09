@@ -59,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        mSectionsPagerAdapter.getItem(0);
+        mSectionsPagerAdapter.getItem(1);
     }
 
 
@@ -88,10 +91,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         if(view.getId() == R.id.main_start_button) {
             mViewPager.setCurrentItem(0);
-            if(testFragment==null) {
-                testFragment = TestFragment.newInstance(0, "Test");
-                testFragment.setParentActivity(mainActivity);
-            }
             testFragment.start(settingsFragment.getSelectedParameters());
         }
     }
@@ -103,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
+
             super(fm);
         }
 

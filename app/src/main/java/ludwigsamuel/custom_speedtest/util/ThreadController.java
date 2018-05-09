@@ -32,16 +32,16 @@ public class ThreadController extends ArrayList<Thread> {
 
         @Override
         public void run() {
-            if(speedtestParameters.getState() != SpeedtestParameters.State.TESTING) {
+            if (speedtestParameters.getState() != SpeedtestParameters.State.TESTING) {
                 removeAll();
                 cancel();
             } else {
                 probeTwo = Calc.average(getProbeSamples(speedtestParameters.getBandwidthSampleContainer()));
-                if(!firstIteration) {
-                    if(Math.abs(probeTwo-probeOne) > speedtestParameters.getAdaptThreshold()) {
-                        if(probeTwo > probeOne && size() < speedtestParameters.getMaxThreadCount()) {
+                if (!firstIteration) {
+                    if (Math.abs(probeTwo - probeOne) > speedtestParameters.getAdaptThreshold()) {
+                        if (probeTwo > probeOne && size() < speedtestParameters.getMaxThreadCount()) {
                             addThread();
-                        } else if(probeTwo < probeOne && size() > speedtestParameters.getMinThreadCount()) {
+                        } else if (probeTwo < probeOne && size() > speedtestParameters.getMinThreadCount()) {
                             removeThread();
                         }
                     }
@@ -72,22 +72,21 @@ public class ThreadController extends ArrayList<Thread> {
     }
 
     public void removeThread() {
-        Thread thread = get(size()-1);
+        Thread thread = get(size() - 1);
         remove(thread);
         thread.interrupt();
         speedtestParameters.getThreadSampleContainer().add(size());
     }
 
     public void removeAll() {
-        for(Thread t : this) {
-            t.interrupt();
+        while (size() > 0) {
+            removeThread();
         }
-        clear();
     }
 
     private List<Double> getProbeSamples(ArrayList<Double> samples) {
-        if(samples.size() >= speedtestParameters.getAdaptSampleCount()) {
-            return samples.subList(samples.size()-speedtestParameters.getAdaptSampleCount(), samples.size()-1);
+        if (samples.size() >= speedtestParameters.getAdaptSampleCount()) {
+            return samples.subList(samples.size() - speedtestParameters.getAdaptSampleCount(), samples.size() - 1);
         }
         return samples;
     }

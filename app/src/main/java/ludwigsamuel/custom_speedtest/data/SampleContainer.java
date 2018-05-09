@@ -32,17 +32,6 @@ public class SampleContainer<T> extends ArrayList<T> {
         }
         return result;
     }
-    /*
-    public void addSample(T sample) {
-        if (sample != null) {
-            add(sample);
-            Log.d("addSample", "sample added: " + sample);
-        }
-        for (Pushable p : pushables) {
-            p.push(this);
-        }
-    }
-    */
 
     public void registerDataContainer(Pushable container) {
         pushables.add(container);
