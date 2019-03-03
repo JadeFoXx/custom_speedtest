@@ -33,7 +33,7 @@ public class BandwidthSampler extends TimerTask {
         endTime = System.currentTimeMillis();
         endBytes = TrafficStats.getTotalRxBytes();
         if (!firstRepetition) {
-            double sample = ((endBytes - startBytes) * 8) / (endTime - startTime);
+            double sample = ((endBytes - startBytes) * 8) / (double)(endTime - startTime);
             speedtestParameters.getBandwidthSampleContainer().add(sample);
         }
         startTime = System.currentTimeMillis();
